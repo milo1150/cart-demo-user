@@ -23,6 +23,9 @@ func main() {
 		DB: db,
 	}
 
+	// Initialize User if run first time
+	loader.LoadDefaultUsers(db)
+
 	// Creates an instance of Echo.
 	e := echo.New()
 

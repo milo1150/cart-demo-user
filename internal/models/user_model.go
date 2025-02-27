@@ -8,10 +8,10 @@ import (
 type User struct {
 	gorm.Model
 	Uuid     uuid.UUID `gorm:"not null;uniqueIndex"`
-	Username string
-	Email    string
+	Username string    `gorm:"unique"`
+	Name     string    `gorm:"unique"`
+	Email    string    `gorm:"unique"`
 	Password string
-	Name     string
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
