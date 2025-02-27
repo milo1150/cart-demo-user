@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"user-service/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -29,5 +30,5 @@ func ConnectDatabase() *gorm.DB {
 }
 
 func RunAutoMigrate(db *gorm.DB) {
-	db.AutoMigrate()
+	db.AutoMigrate(&models.User{})
 }
