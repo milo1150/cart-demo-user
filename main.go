@@ -14,13 +14,18 @@ func main() {
 	// Load ENV
 	env := loader.LoadEnv()
 
-	// Database handler
-	db := database.ConnectDatabase()
+	// Posrgres database
+	db := database.ConnectPostgres()
 	database.RunAutoMigrate(db)
+
+	// Redis database
+	rdb := database.ConnectRedis()
+	defer rdb.Close()
 
 	// Global state
 	appState := &types.AppState{
 		DB:  db,
+		RDB: rdb,
 		Env: env,
 	}
 

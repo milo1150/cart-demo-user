@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase() *gorm.DB {
+func ConnectPostgres() *gorm.DB {
 	// Load env
 	host := os.Getenv("DATABASE_HOST")
 	user := os.Getenv("DATABASE_USER")

@@ -20,11 +20,11 @@ services:
 
   redis-user:
     image: redis:alpine
-    container_name: redis-user
+    container_name: ${REDIS_CONTAINER_NAME}
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - 6379:6379
+      - ${REDIS_HOST_PORT}:${REDIS_DOCKER_PORT}
     volumes:
       - redis-data:/data
     networks:
