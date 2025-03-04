@@ -23,9 +23,9 @@ func LoginHandler(c echo.Context, appState types.AppState) error {
 		return c.JSON(http.StatusBadRequest, errorMap)
 	}
 
-	// Validate username, password
+	// Verify username, password
 	userService := services.UserService{DB: appState.DB}
-	user, err := userService.ValidateLoginUser(payload)
+	user, err := userService.VerifyUser(payload)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, cartpkg.GetSimpleErrorMessage(err.Error()))
 	}

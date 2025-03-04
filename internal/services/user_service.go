@@ -13,7 +13,7 @@ type UserService struct {
 	DB *gorm.DB
 }
 
-func (u *UserService) ValidateLoginUser(payload schemas.LoginPayload) (*models.User, error) {
+func (u *UserService) VerifyUser(payload schemas.LoginPayload) (*models.User, error) {
 	// Find User
 	user := models.User{}
 	query := u.DB.First(&user, &models.User{Username: payload.Username})
