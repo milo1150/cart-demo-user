@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"user-service/internal/middlewares"
+	"user-service/internal/api"
 	"user-service/internal/types"
 
 	"github.com/labstack/echo/v4"
@@ -14,20 +14,18 @@ type RegisterRoutes struct {
 }
 
 func (r *RegisterRoutes) RegisterAppRoutes() {
-	r.publicRoutes()
-	r.privateRoutes()
+	userGroup := r.Echo.Group("/user")
+	r.publicRoutes(userGroup)
+	r.privateRoutes(userGroup)
 }
 
-func (r *RegisterRoutes) publicRoutes() {
-	r.Echo.POST("/login", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "/login endpoint")
+func (r *RegisterRoutes) publicRoutes(userGroup *echo.Group) {
+	userGroup.POST("/login", func(c echo.Context) error {
+		return api.LoginHandler(c, *r.AppState)
 	})
 }
 
-func (r *RegisterRoutes) privateRoutes() {
-	userGroup := r.Echo.Group("/user")
-	userGroup.Use(middlewares.JWT())
-
+func (r *RegisterRoutes) privateRoutes(userGroup *echo.Group) {
 	userGroup.POST("/create", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "/create user endpoint")
 	})
