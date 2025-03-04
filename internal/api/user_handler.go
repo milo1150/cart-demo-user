@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"user-service/internal/middlewares"
 	"user-service/internal/schemas"
 	"user-service/internal/services"
 	"user-service/internal/types"
@@ -24,9 +25,19 @@ func LoginHandler(c echo.Context, appState types.AppState) error {
 
 	// Validate username, password
 	userService := services.UserService{DB: appState.DB}
-	if err := userService.ValidateLoginUser(payload); err != nil {
+	user, err := userService.ValidateLoginUser(payload)
+	if err != nil {
 		return c.JSON(http.StatusUnauthorized, cartpkg.GetSimpleErrorMessage(err.Error()))
 	}
 
-	return c.JSON(http.StatusOK, http.StatusOK)
+	// Create token with claims
+	env := appState.Env
+	token, err := middlewares.CreateTokenWithClaims(*user, env.JwtSecret, env.JwtTokenDuration)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, cartpkg.GetSimpleErrorMessage(err.Error()))
+	}
+
+	response := map[string]string{"token": token}
+
+	return c.JSON(http.StatusOK, response)
 }

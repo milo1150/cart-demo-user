@@ -52,11 +52,11 @@ func LoadDefaultUsers(db *gorm.DB) {
 			newUser := &models.User{
 				Username: userJson.Username,
 				Password: hashPassword,
+				Email:    userJson.Email,
 			}
 			if err := db.Create(newUser).Error; err != nil {
 				log.Fatalf("Failed to create %v", userJson.Username)
 			}
 		}
-
 	}
 }

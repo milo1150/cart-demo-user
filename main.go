@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// Load ENV
-	loader.LoadEnv()
+	env := loader.LoadEnv()
 
 	// Database handler
 	db := database.ConnectDatabase()
@@ -20,7 +20,8 @@ func main() {
 
 	// Global state
 	appState := &types.AppState{
-		DB: db,
+		DB:  db,
+		Env: env,
 	}
 
 	// Initialize User if run first time

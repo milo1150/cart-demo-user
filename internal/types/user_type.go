@@ -6,4 +6,5 @@ type UserJsonFile struct {
 
 type UserJson struct {
 	Username string
+	Email    string
 }

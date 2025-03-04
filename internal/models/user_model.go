@@ -12,6 +12,8 @@ type User struct {
 	Name     string    `gorm:"unique"`
 	Email    string    `gorm:"unique"`
 	Password string
+
+	// TODO: Role
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
