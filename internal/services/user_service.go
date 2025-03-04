@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"user-service/internal/models"
+	"user-service/internal/repositories"
 	"user-service/internal/schemas"
 	"user-service/internal/utils"
 
@@ -15,9 +16,8 @@ type UserService struct {
 
 func (u *UserService) VerifyUser(payload schemas.LoginPayload) (*models.User, error) {
 	// Find User
-	user := models.User{}
-	query := u.DB.First(&user, &models.User{Username: payload.Username})
-	if err := query.Error; err != nil {
+	user, err := repositories.FindUser(u.DB, payload.Username)
+	if err != nil {
 		return nil, fmt.Errorf("user not found")
 	}
 
@@ -26,5 +26,5 @@ func (u *UserService) VerifyUser(payload schemas.LoginPayload) (*models.User, er
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	return &user, nil
+	return user, nil
 }

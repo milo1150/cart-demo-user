@@ -3,9 +3,11 @@ package api
 import (
 	"net/http"
 	"user-service/internal/middlewares"
+	"user-service/internal/repositories"
 	"user-service/internal/schemas"
 	"user-service/internal/services"
 	"user-service/internal/types"
+	"user-service/internal/utils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -31,12 +33,20 @@ func LoginHandler(c echo.Context, appState types.AppState) error {
 	}
 
 	// Create token with claims
-	env := appState.Env
-	token, err := middlewares.CreateTokenWithClaims(*user, env.JwtSecret, env.JwtTokenDuration)
+	token, err := middlewares.CreateTokenWithClaims(*user, appState.Env.JwtSecret, appState.Env.JwtTokenDuration)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, cartpkg.GetSimpleErrorMessage(err.Error()))
 	}
 
+	// Generate redis key
+	key := utils.GenerateUserRedisKey(user.Username, c.RealIP())
+
+	// Cache token in Redis
+	if err := repositories.CacheUserToken(c, appState.RDB, key, token, appState.Env.JwtTokenDuration); err != nil {
+		return c.JSON(http.StatusInternalServerError, cartpkg.GetSimpleErrorMessage(err.Error()))
+	}
+
+	// Prepare response
 	response := map[string]string{"token": token}
 
 	return c.JSON(http.StatusOK, response)
