@@ -10,11 +10,12 @@ import (
 	"user-service/internal/utils"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	cartpkg "github.com/milo1150/cart-demo-pkg/pkg"
 )
 
-func LoginHandler(c echo.Context, appState types.AppState) error {
+func LoginHandler(c echo.Context, appState *types.AppState) error {
 	payload := schemas.LoginPayload{}
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, cartpkg.GetSimpleErrorMessage(err.Error()))
@@ -50,4 +51,18 @@ func LoginHandler(c echo.Context, appState types.AppState) error {
 	response := map[string]string{"token": token}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func AuthHandler(c echo.Context, appState *types.AppState) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*middlewares.JwtCustomClaims)
+	token := user.Raw
+	redisKey := utils.GenerateUserRedisKey(claims.Name, c.RealIP())
+
+	existedToken, err := repositories.FindUserToken(c, appState.RDB, redisKey)
+	if token != existedToken || err != nil {
+		return c.JSON(http.StatusUnauthorized, "expired jwt")
+	}
+
+	return c.JSON(http.StatusOK, http.StatusOK)
 }

@@ -14,3 +14,11 @@ func CacheUserToken(c echo.Context, rdb *redis.Client, key string, token string,
 	}
 	return nil
 }
+
+func FindUserToken(c echo.Context, rdb *redis.Client, key string) (string, error) {
+	token, err := rdb.Get(c.Request().Context(), key).Result()
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}

@@ -22,8 +22,12 @@ type JwtCustomClaims struct {
 func JwtMiddleware() echo.MiddlewareFunc {
 	jwtSecret := os.Getenv("JWT_SECRET")
 
+	// Validate jwt
 	return echojwt.WithConfig(echojwt.Config{
-		SigningKey: jwtSecret,
+		SigningKey: []byte(jwtSecret),
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(JwtCustomClaims)
+		},
 	})
 }
 
