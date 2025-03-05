@@ -27,7 +27,7 @@ func (r *RegisterRoutes) publicRoutes(userGroup echo.Group) {
 }
 
 func (r *RegisterRoutes) privateRoutes(userGroup echo.Group) {
-	// If not implment jwt config middlware, in "user" context in AuthHandler wil be nil
+	// If not implment jwt config middlware, "user" in context wil be nil
 	userGroup.Use(middlewares.JwtMiddleware())
 
 	// Gateway Forward auth only.
