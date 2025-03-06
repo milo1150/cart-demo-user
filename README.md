@@ -21,6 +21,8 @@ REDIS_CONTAINER_NAME=redis-user
 REDIS_HOST_PORT=6379
 REDIS_DOCKER_PORT=6379
 COMPOSE_PROJECT_NAME=demo-user-service
+NATS_URL=nats://nats:4222 # Docker service name:port
+NATS_TOKEN=#helloworld
 ```
 
 - For first time.
