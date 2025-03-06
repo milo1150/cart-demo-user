@@ -59,10 +59,16 @@ func AuthHandler(c echo.Context, appState *types.AppState) error {
 	token := user.Raw
 	redisKey := utils.GenerateUserRedisKey(claims.Name, c.RealIP())
 
+	// Validate is token matched
 	existedToken, err := repositories.FindUserToken(c, appState.RDB, redisKey)
 	if token != existedToken || err != nil {
 		return c.JSON(http.StatusUnauthorized, "expired jwt")
 	}
 
-	return c.JSON(http.StatusOK, http.StatusOK)
+	// Set forward header
+	c.Response().Header().Set("X-User-Name", claims.Name)
+	c.Response().Header().Set("X-User-Email", claims.Email)
+	c.Response().Header().Set("X-User-Role", string(claims.Role))
+
+	return c.NoContent(http.StatusOK)
 }
