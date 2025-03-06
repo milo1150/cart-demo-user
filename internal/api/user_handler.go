@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"user-service/internal/middlewares"
+	"user-service/internal/nats"
 	"user-service/internal/repositories"
 	"user-service/internal/schemas"
 	"user-service/internal/services"
@@ -71,4 +72,10 @@ func AuthHandler(c echo.Context, appState *types.AppState) error {
 	c.Response().Header().Set("X-User-Role", string(claims.Role))
 
 	return c.NoContent(http.StatusOK)
+}
+
+func CreateUserHandler(c echo.Context, appState *types.AppState) error {
+	nats.StartNATSPublisher(appState.NATS)
+
+	return c.JSON(http.StatusOK, "CreateUserHandler")
 }

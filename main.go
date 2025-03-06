@@ -4,6 +4,7 @@ import (
 	"user-service/internal/database"
 	"user-service/internal/loader"
 	"user-service/internal/middlewares"
+	"user-service/internal/nats"
 	"user-service/internal/routes"
 	"user-service/internal/types"
 
@@ -13,6 +14,10 @@ import (
 func main() {
 	// Load ENV
 	env := loader.LoadEnv()
+
+	// NATS
+	nc := nats.ConnectNATS()
+	defer nc.Close()
 
 	// Posrgres database
 	db := database.ConnectPostgres()
@@ -24,9 +29,10 @@ func main() {
 
 	// Global state
 	appState := &types.AppState{
-		DB:  db,
-		RDB: rdb,
-		Env: env,
+		DB:   db,
+		RDB:  rdb,
+		Env:  env,
+		NATS: nc,
 	}
 
 	// Initialize User if run first time
@@ -41,6 +47,9 @@ func main() {
 	// Init Route
 	r := routes.RegisterRoutes{Echo: e, AppState: appState}
 	r.RegisterAppRoutes()
+
+	// TODO: remove
+	go nats.StartNATSListener(nc)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":1323"))

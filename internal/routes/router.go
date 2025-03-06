@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"net/http"
 	"user-service/internal/api"
 	"user-service/internal/middlewares"
 	"user-service/internal/types"
@@ -30,13 +29,12 @@ func (r *RegisterRoutes) privateRoutes(userGroup echo.Group) {
 	// If not implment jwt config middlware, "user" in context wil be nil
 	userGroup.Use(middlewares.JwtMiddleware())
 
-	// Gateway Forward auth only.
-	// Forward auth can't debug.
+	// Gateway Forward auth
 	userGroup.GET("/auth", func(c echo.Context) error {
 		return api.AuthHandler(c, r.AppState)
 	})
 
 	userGroup.POST("/create", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "/create user endpoint") // TODO
+		return api.CreateUserHandler(c, r.AppState)
 	})
 }
