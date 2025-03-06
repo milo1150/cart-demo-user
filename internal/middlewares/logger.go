@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -35,4 +36,12 @@ func logger() echo.MiddlewareFunc {
 			return nil
 		},
 	})
+}
+
+func InitializeZapLogger() *zap.Logger {
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("Failed to initialize Zap Logger: %v", err)
+	}
+	return logger
 }

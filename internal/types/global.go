@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/nats-io/nats.go"
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -16,4 +17,5 @@ type AppState struct {
 	RDB  *redis.Client
 	Env  Env
 	NATS *nats.Conn
+	Log  *zap.Logger
 }

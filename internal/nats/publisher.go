@@ -1,19 +1,22 @@
 package nats
 
 import (
-	"fmt"
-	"log"
+	"strconv"
 
 	"github.com/nats-io/nats.go"
+	"go.uber.org/zap"
 )
 
-func StartNATSPublisher(nc *nats.Conn) {
-	// Send a message
-	subject := "updates"
-	message := "Hello NATS!"
+func PublishUserCreated(nc *nats.Conn, log *zap.Logger) {
+	subject := "user.created"
+	userId := strconv.Itoa(22) // TODO: use real user id
+	data := []byte(userId)
 
-	if err := nc.Publish(subject, []byte(message)); err != nil {
-		log.Fatalf("❌ Failed to publish message: %v", err)
+	if err := nc.Publish(subject, data); err != nil {
+		log.Error("Failed to publish",
+			zap.String("subject", subject),
+			zap.Error(err),
+		)
+		return
 	}
-	fmt.Println("✅ Message sent:", subject, "->", message)
 }

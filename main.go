@@ -27,12 +27,16 @@ func main() {
 	rdb := database.ConnectRedis()
 	defer rdb.Close()
 
+	// Initialize Zap Logger
+	logger := middlewares.InitializeZapLogger()
+
 	// Global state
 	appState := &types.AppState{
 		DB:   db,
 		RDB:  rdb,
 		Env:  env,
 		NATS: nc,
+		Log:  logger,
 	}
 
 	// Initialize User if run first time
@@ -47,9 +51,6 @@ func main() {
 	// Init Route
 	r := routes.RegisterRoutes{Echo: e, AppState: appState}
 	r.RegisterAppRoutes()
-
-	// TODO: remove
-	go nats.StartNATSListener(nc)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":1323"))

@@ -75,7 +75,8 @@ func AuthHandler(c echo.Context, appState *types.AppState) error {
 }
 
 func CreateUserHandler(c echo.Context, appState *types.AppState) error {
-	nats.StartNATSPublisher(appState.NATS)
+	// TODO: send real user id
+	nats.PublishUserCreated(appState.NATS, appState.Log)
 
 	return c.JSON(http.StatusOK, "CreateUserHandler")
 }
