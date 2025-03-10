@@ -52,8 +52,8 @@ github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovk
 github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/yFXSvRLM=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
-github.com/milo1150/cart-demo-pkg v1.0.3 h1:NgPqDZ9QyUAQPAv2E24lHuw/CZPN4B2ZyP9V2nryg8Q=
-github.com/milo1150/cart-demo-pkg v1.0.3/go.mod h1:1xMT7lpE9EqW00jsEo0lpO3G+IJQ5xw9kqhM3xKvRzk=
+github.com/milo1150/cart-demo-pkg v1.0.4 h1:ZvN8Ia8NHvwJzb+2xCHYsLkkgy0P+lzH7+jQiaSegoQ=
+github.com/milo1150/cart-demo-pkg v1.0.4/go.mod h1:1xMT7lpE9EqW00jsEo0lpO3G+IJQ5xw9kqhM3xKvRzk=
 github.com/nats-io/nats.go v1.39.1 h1:oTkfKBmz7W047vRxV762M67ZdXeOtUgvbBaNoQ+3PPk=
 github.com/nats-io/nats.go v1.39.1/go.mod h1:MgRb8oOdigA6cYpEPhXJuRVH6UE/V4jblJ2jQ27IXYM=
 github.com/nats-io/nkeys v0.4.9 h1:qe9Faq2Gxwi6RZnZMXfmGMZkg3afLLOtrU+gDZJ35b0=

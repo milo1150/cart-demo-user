@@ -75,8 +75,24 @@ func AuthHandler(c echo.Context, appState *types.AppState) error {
 }
 
 func CreateUserHandler(c echo.Context, appState *types.AppState) error {
-	// TODO: send real user id
-	nats.PublishUserCreated(appState.NATS, appState.Log)
+	payload := schemas.CreateUserPayload{}
+	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, cartpkg.GetSimpleErrorMessage(err.Error()))
+	}
 
-	return c.JSON(http.StatusOK, "CreateUserHandler")
+	validate := validator.New()
+	if errorMap := cartpkg.ValidateJsonPayload(validate, payload); errorMap != nil {
+		return c.JSON(http.StatusBadRequest, errorMap)
+	}
+
+	// Create User
+	user, err := repositories.CreateUser(appState.DB, payload)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, cartpkg.GetSimpleErrorMessage(err.Error()))
+	}
+
+	// Publish UserID
+	nats.PublishUserCreated(appState.NATS, appState.Log, user.ID)
+
+	return c.JSON(http.StatusCreated, http.StatusCreated)
 }

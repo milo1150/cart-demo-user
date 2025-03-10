@@ -9,7 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo-jwt/v4 v4.3.0
 	github.com/labstack/echo/v4 v4.13.3
-	github.com/milo1150/cart-demo-pkg v1.0.3
+	github.com/milo1150/cart-demo-pkg v1.0.4
 	github.com/nats-io/nats.go v1.39.1
 	github.com/redis/go-redis/v9 v9.7.1
 	go.uber.org/zap v1.27.0
@@ -19,6 +19,7 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect

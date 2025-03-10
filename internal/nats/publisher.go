@@ -1,16 +1,15 @@
 package nats
 
 import (
-	"strconv"
+	cartpkg "github.com/milo1150/cart-demo-pkg/pkg"
 
 	"github.com/nats-io/nats.go"
 	"go.uber.org/zap"
 )
 
-func PublishUserCreated(nc *nats.Conn, log *zap.Logger) {
+func PublishUserCreated(nc *nats.Conn, log *zap.Logger, userId uint) {
 	subject := "user.created"
-	userId := strconv.Itoa(22) // TODO: use real user id
-	data := []byte(userId)
+	data := cartpkg.UintToBytes(userId)
 
 	if err := nc.Publish(subject, data); err != nil {
 		log.Error("Failed to publish",
