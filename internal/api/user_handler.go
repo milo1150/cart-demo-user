@@ -41,7 +41,7 @@ func LoginHandler(c echo.Context, appState *types.AppState) error {
 	}
 
 	// Generate redis key
-	key := utils.GenerateUserRedisKey(user.Username, c.RealIP())
+	key := utils.GetUserRedisKey(user.Username, c.RealIP())
 
 	// Cache token in Redis
 	if err := repositories.CacheUserToken(c, appState.RDB, key, token, appState.Env.JwtTokenDuration); err != nil {
@@ -55,10 +55,17 @@ func LoginHandler(c echo.Context, appState *types.AppState) error {
 }
 
 func AuthHandler(c echo.Context, appState *types.AppState) error {
+	// Avoid panic if middleware failed or header is missing or forget implement jwt middleware in router file
+	userRaw := c.Get("user")
+	if userRaw == nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "missing user context in header"})
+	}
+
+	// Extract token
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*middlewares.JwtCustomClaims)
 	token := user.Raw
-	redisKey := utils.GenerateUserRedisKey(claims.Name, c.RealIP())
+	redisKey := utils.GetUserRedisKey(claims.Name, c.RealIP())
 
 	// Validate is token matched
 	existedToken, err := repositories.FindUserToken(c, appState.RDB, redisKey)

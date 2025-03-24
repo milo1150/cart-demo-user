@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -24,6 +25,7 @@ func logger() echo.MiddlewareFunc {
 		LogProtocol: true,
 		LogRemoteIP: true,
 		LogMethod:   true,
+		LogError:    true,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
 			logger.Info("request",
 				zap.String("IP", v.RemoteIP),
@@ -32,6 +34,7 @@ func logger() echo.MiddlewareFunc {
 				zap.String("method", v.Method),
 				zap.Int("status", v.Status),
 				zap.Duration("latency", v.Latency),
+				zap.Error(v.Error),
 			)
 			return nil
 		},
@@ -44,4 +47,11 @@ func InitializeZapLogger() *zap.Logger {
 		log.Fatalf("Failed to initialize Zap Logger: %v", err)
 	}
 	return logger
+}
+
+// Log all headers (great for debug)
+func LogHeaders(c echo.Context) {
+	for k, v := range c.Request().Header {
+		fmt.Println(k, v)
+	}
 }

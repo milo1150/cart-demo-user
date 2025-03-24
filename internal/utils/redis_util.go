@@ -2,6 +2,6 @@ package utils
 
 import "fmt"
 
-func GenerateUserRedisKey(username, ip string) string {
+func GetUserRedisKey(username, ip string) string {
 	return fmt.Sprintf("%v:%v", username, ip)
 }
