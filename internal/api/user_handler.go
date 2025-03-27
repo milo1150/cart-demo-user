@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 	"user-service/internal/middlewares"
 	"user-service/internal/nats"
 	"user-service/internal/repositories"
@@ -74,6 +75,7 @@ func AuthHandler(c echo.Context, appState *types.AppState) error {
 	}
 
 	// Set forward header
+	c.Response().Header().Set("X-User-Id", strconv.Itoa(int(claims.UserId)))
 	c.Response().Header().Set("X-User-Name", claims.Name)
 	c.Response().Header().Set("X-User-Email", claims.Email)
 	c.Response().Header().Set("X-User-Role", string(claims.Role))

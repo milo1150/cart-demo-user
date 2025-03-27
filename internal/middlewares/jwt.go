@@ -12,6 +12,7 @@ import (
 )
 
 type JwtCustomClaims struct {
+	UserId  uint       `json:"user_id"`
 	Name    string     `json:"name"`
 	Email   string     `json:"email"`
 	IsAdmin bool       `json:"is_admin"`
@@ -33,9 +34,10 @@ func JwtMiddleware() echo.MiddlewareFunc {
 
 func CreateTokenWithClaims(user models.User, secret string, tokenDuration int) (string, error) {
 	claims := JwtCustomClaims{
-		Name:  user.Username,
-		Email: user.Email,
-		Role:  enums.Admin, // TODO: user.Role
+		UserId: user.ID,
+		Name:   user.Username,
+		Email:  user.Email,
+		Role:   enums.Admin, // TODO: user.Role
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(tokenDuration))),
 		},
