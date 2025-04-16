@@ -19,7 +19,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflag
 
 
 # ---- Final Stage ----
-# FROM alpine:latest
 FROM ubuntu:latest
 
 WORKDIR /app
