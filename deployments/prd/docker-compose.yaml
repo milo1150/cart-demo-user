@@ -1,0 +1,54 @@
+services:
+  postgres-user: # service name must match the hostname in .env file.
+    image: postgres:17.3
+    container_name: postgres-user
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - ${DATABASE_HOST_PORT}:${DATABASE_DOCKER_PORT}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cart-demo
+
+  redis-user:
+    image: redis:alpine
+    container_name: ${REDIS_CONTAINER_NAME}
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - ${REDIS_HOST_PORT}:${REDIS_DOCKER_PORT}
+    volumes:
+      - redis-data:/data
+    networks:
+      - cart-demo
+
+  app:
+    build:
+      context: ../../
+      dockerfile: deployments/prd/Dockerfile
+    expose:
+      - 1323
+    # volumes:
+    #   - ../../:/app # This overwrites everything that copied into the final stage production image
+    depends_on:
+      postgres-user:
+        condition: service_healthy
+    networks:
+      - cart-demo
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  cart-demo:
+    name: cart-demo
+    driver: bridge
