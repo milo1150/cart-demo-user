@@ -30,8 +30,7 @@ services:
     networks:
       - cart-demo
 
-  app:
-    container_name: user-service-app
+  user-service:
     build:
       context: ${APP_BUILD_CONTEXT}
       dockerfile: deployments/prd/Dockerfile
