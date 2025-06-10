@@ -5,7 +5,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"user-service/internal/models"
+	"user-service/internal/nats"
+	"user-service/internal/repositories"
+	"user-service/internal/schemas"
 	"user-service/internal/types"
 	"user-service/internal/utils"
 
@@ -38,7 +40,7 @@ func getDefaultUsers() types.UserJsonFile {
 	return *users
 }
 
-func LoadDefaultUsers(db *gorm.DB) {
+func LoadDefaultUsers(db *gorm.DB, appState types.AppState) {
 	users := getDefaultUsers()
 	pwd := os.Getenv("ADMIN_PASSWORD")
 
@@ -48,14 +50,20 @@ func LoadDefaultUsers(db *gorm.DB) {
 	}
 
 	for _, userJson := range users.Users {
-		if err := db.First(&models.User{Username: userJson.Username}).Error; err != nil {
-			newUser := &models.User{
+		_, err := repositories.FindUser(db, userJson.Username)
+		if err != nil {
+			newUser := schemas.CreateUserPayload{
 				Username: userJson.Username,
+				Name:     userJson.Username,
 				Password: hashPassword,
 				Email:    userJson.Email,
 			}
-			if err := db.Create(newUser).Error; err != nil {
+			user, err := repositories.CreateUser(db, newUser)
+			if err != nil {
 				log.Fatalf("Failed to create %v", userJson.Username)
+			} else {
+				log.Printf("Created: %s \n", userJson.Username)
+				nats.PublishUserCreated(appState.NATS, appState.Log, user.ID)
 			}
 		}
 	}

@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// Initialize User if run first time
-	loader.LoadDefaultUsers(db)
+	loader.LoadDefaultUsers(db, *appState)
 
 	// Creates an instance of Echo.
 	e := echo.New()
